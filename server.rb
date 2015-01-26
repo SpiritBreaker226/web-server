@@ -16,7 +16,7 @@ class Server
 		  lines = get_clients_request_header(client)
 		  puts lines                                        # Output the full request to stdout
 
-		  filename = get_response_file(lines[0])
+		  filename = get_client_file(lines[0])
 		  header_content = get_content_from(filename)
 		  
 		  client.puts(header_content) # Output the current time to the client
@@ -72,7 +72,7 @@ class Server
 		end
 	end
 
-	def get_response_file(first_line_from_client_header)
+	def get_client_file(first_line_from_client_header)
 		first_line_from_client_header.gsub(/GET \//, "").gsub(/\ HTTP.*/, "")
 	end
 end
