@@ -17,7 +17,7 @@ loop do                                             # Server runs forever
 
   puts lines                                        # Output the full request to stdout
 
-  filename = lines[0].gsub(/GET \//, "").gsub(/HTTP*\/\d.\d/, "")
+  filename = lines[0].gsub(/GET \//, "").gsub(/\ HTTP.*/, "")
   header = []
 
   if File.exist?(filename)
@@ -27,7 +27,7 @@ loop do                                             # Server runs forever
   	header << "Content-Type: text/html" # should reflect the appropriate file type
   else
   	response_body = "File Not Found\n"
-  	
+
   	header << "HTTP/1.1 404 Not Found"
   	header << "Content-Type: text/plain" # is always text/plain
   end
