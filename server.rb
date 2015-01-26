@@ -18,13 +18,26 @@ loop do                                             # Server runs forever
   puts lines                                        # Output the full request to stdout
 
   filename = lines[0].gsub(/GET \//, "").gsub(/HTTP*\/\d.\d/, "")
+  header = []
 
   if File.exist?(filename)
   	response_body = File.read(filename)
+
+  	header << "HTTP/1.1 200 OK"
+  	header << "Content-Type: text/html" # should reflect the appropriate file type
   else
   	response_body = "File Not Found\n"
+  	
+  	header << "HTTP/1.1 404 Not Found"
+  	header << "Content-Type: text/plain" # is always text/plain
   end
 
-  client.puts(response_body)                       # Output the current time to the client
-  client.close                                      # Disconnect from the client
+  header << "Content-Length: #{response_body.size}"
+  header << "Connection: close"
+  header = header.join("\r\n")
+
+  response = [header, response_body].join("\r\n\r\n")
+
+  client.puts(response) # Output the current time to the client
+  client.close                                      		# Disconnect from the client
 end
