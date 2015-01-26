@@ -17,10 +17,14 @@ loop do                                             # Server runs forever
 
   puts lines                                        # Output the full request to stdout
 
-  filename = "index.html"
-  response = File.read(filename)
+  filename = lines[0].gsub(/GET \//, "").gsub(/HTTP*\/\d.\d/, "")
 
+  if File.exist?(filename)
+  	response_body = File.read(filename)
+  else
+  	response_body = "File Not Found\n"
+  end
 
-  client.puts(response)                       # Output the current time to the client
+  client.puts(response_body)                       # Output the current time to the client
   client.close                                      # Disconnect from the client
 end
