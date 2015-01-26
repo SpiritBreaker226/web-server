@@ -1,5 +1,20 @@
 require 'socket'                                    # Require socket from Ruby Standard Library (stdlib)
 
+def get_content_type(filename)
+	case File.extname(filename)
+	when ".html", ".htm" then "text/html"
+	when ".css" then "text/css"
+	when ".jpg", ".jpeg" then "mage/jpeg"
+	when ".png" then "image/png"
+	when ".gif" then "image/gif"
+	when ".json" then "application/json"
+	when ".js" then "application/javascript"
+	when ".ico" then "image/x-icon"
+	else
+		"text/plain"
+	end
+end
+
 def get_response_file(first_line_from_client_header)
 	first_line_from_client_header.gsub(/GET \//, "").gsub(/\ HTTP.*/, "")
 end
@@ -28,7 +43,7 @@ loop do                                             # Server runs forever
   	response_body = File.read(filename)
 
   	header << "HTTP/1.1 200 OK"
-  	header << "Content-Type: text/html" # should reflect the appropriate file type
+  	header << "Content-Type: #{get_content_type(filename)}" # should reflect the appropriate file type
   else
   	response_body = "File Not Found\n"
 
