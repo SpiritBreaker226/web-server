@@ -13,12 +13,7 @@ class Server
 		loop do                                             # Server runs forever
 		  client = server.accept                            # Wait for a client to connect. Accept returns a TCPSocket
 
-		  lines = []
-
-		  while (line = client.gets.chomp) && !line.empty?  # Read the request and collect it until it's empty
-		    lines << line
-		  end
-
+		  lines = get_clients_request_header(client)
 		  puts lines                                        # Output the full request to stdout
 
 		  filename = get_response_file(lines[0])
@@ -30,6 +25,16 @@ class Server
 	end
 
 	private
+
+	def get_clients_request_header(client)
+	  request_lines = []
+
+	  while (line = client.gets.chomp) && !line.empty?  # Read the request and collect it until it's empty
+	    request_lines << line
+	  end
+
+	  request_lines
+	end
 
 	def get_content_from(filename)
 		header = []
