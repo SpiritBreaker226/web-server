@@ -1,5 +1,9 @@
 require 'socket'                                    # Require socket from Ruby Standard Library (stdlib)
 
+def get_response_file(first_line_from_client_header)
+	first_line_from_client_header.gsub(/GET \//, "").gsub(/\ HTTP.*/, "")
+end
+
 host = 'localhost'
 port = 2000
 
@@ -17,7 +21,7 @@ loop do                                             # Server runs forever
 
   puts lines                                        # Output the full request to stdout
 
-  filename = lines[0].gsub(/GET \//, "").gsub(/\ HTTP.*/, "")
+  filename = get_response_file(lines[0])
   header = []
 
   if File.exist?(filename)
