@@ -58,7 +58,8 @@ loop do                                             # Server runs forever
   puts lines                                        # Output the full request to stdout
 
   filename = get_response_file(lines[0])
+  header_content = get_content_from(filename)
   
-  client.puts(get_content_from(filename)) # Output the current time to the client
+  client.puts(header_content) # Output the current time to the client
   client.close                                      		# Disconnect from the client
 end
