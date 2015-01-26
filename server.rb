@@ -1,5 +1,26 @@
 require 'socket'                                    # Require socket from Ruby Standard Library (stdlib)
 
+def get_content_from(filename)
+	header = []
+
+  if File.exist?(filename)
+  	response_body = File.read(filename)
+
+  	header << "HTTP/1.1 200 OK"
+  	header << "Content-Type: #{get_content_type(filename)}" # should reflect the appropriate file type
+  else
+  	response_body = "File Not Found\n"
+
+  	header << "HTTP/1.1 404 Not Found"
+  	header << "Content-Type: text/plain" # is always text/plain
+  end
+
+  header << "Content-Length: #{response_body.size}"
+  header << "Connection: close"
+
+  [header.join("\r\n"), response_body].join("\r\n\r\n")
+end
+
 def get_content_type(filename)
 	case File.extname(filename)
 	when ".html", ".htm" then "text/html"
@@ -37,26 +58,7 @@ loop do                                             # Server runs forever
   puts lines                                        # Output the full request to stdout
 
   filename = get_response_file(lines[0])
-  header = []
-
-  if File.exist?(filename)
-  	response_body = File.read(filename)
-
-  	header << "HTTP/1.1 200 OK"
-  	header << "Content-Type: #{get_content_type(filename)}" # should reflect the appropriate file type
-  else
-  	response_body = "File Not Found\n"
-
-  	header << "HTTP/1.1 404 Not Found"
-  	header << "Content-Type: text/plain" # is always text/plain
-  end
-
-  header << "Content-Length: #{response_body.size}"
-  header << "Connection: close"
-  header = header.join("\r\n")
-
-  response = [header, response_body].join("\r\n\r\n")
-
-  client.puts(response) # Output the current time to the client
+  
+  client.puts(get_content_from(filename)) # Output the current time to the client
   client.close                                      		# Disconnect from the client
 end
