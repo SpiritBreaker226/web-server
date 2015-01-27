@@ -37,6 +37,8 @@ class Server
 	end
 
 	def get_content_from(filename)
+		filename = "index.html" if filename.empty?
+
 		header = []
 
 	  if File.exist?(filename)
